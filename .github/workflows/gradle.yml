@@ -1,0 +1,29 @@
+name: build and push
+
+on:
+  push:
+    branches:
+      - master
+
+env:
+  DOCKER_IMAGE: myride
+  DOCKER_TAG: nginx-proxy
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Build the Docker image
+      run: docker build . --file Dockerfile --tag image
+
+    - name: Log into DockerHub
+      run: echo "${{ secrets.DOCKER_TOKEN }}" | docker login docker.io -u ${{ secrets.DOCKER_USER }} --password-stdin
+
+    - name: Push image to DockerHub
+      run: |
+          docker tag image ${{ secrets.DOCKER_USER }}/$DOCKER_IMAGE:$DOCKER_TAG
+          docker push ${{ secrets.DOCKER_USER }}/$DOCKER_IMAGE:$DOCKER_TAG
+          
