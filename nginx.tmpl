@@ -291,6 +291,7 @@ server {
 	{{ if (exists (printf "/etc/nginx/certs/%s.chain.pem" $cert)) }}
 	ssl_stapling on;
 	ssl_stapling_verify on;
+	underscores_in_headers on;
 	ssl_trusted_certificate {{ printf "/etc/nginx/certs/%s.chain.pem" $cert }};
 	{{ end }}
 
